@@ -1,0 +1,172 @@
+body {
+    background-color: #f8f9fa;
+}
+
+/* Container Styles */
+.container {
+    max-width: 800px;
+}
+
+/* Color Variables */
+:root {
+    --primary-color: #6c5ce7; /* Purple */
+    --primary-dark: #534bae;
+    --secondary-color: #00b894; /* Teal */
+    --accent-color: #0984e3; /* Blue */
+    --success-color: #00cec9; /* Cyan */
+    --warning-color: #fdcb6e; /* Yellow */
+    --danger-color: #d63031; /* Red */
+    --info-color: #74b9ff; /* Light Blue */
+    --light-color: #f1f2f6;
+    --dark-color: #2d3436;
+    --gradient-1: linear-gradient(145deg, #6c5ce7, #a8e063);
+    --gradient-2: linear-gradient(145deg, #00b894, #0984e3);
+    --gradient-3: linear-gradient(145deg, #fdcb6e, #00b894);
+}
+
+/* Card Styles */
+.card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    background-image: var(--gradient-1);
+    background-size: 100% 300px;
+    background-position: 0% 100%;
+    background-repeat: no-repeat;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    background-position: 0% 50%;
+}
+
+/* Form Styles */
+.form-label {
+    color: var(--dark-color);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.form-label:hover {
+    color: var(--primary-color);
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(108, 92, 231, 0.25);
+    background: white;
+}
+
+/* Button Styles */
+.btn-primary {
+    background: var(--gradient-2);
+    border: none;
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 184, 148, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 184, 148, 0.4);
+    background: var(--gradient-3);
+}
+
+/* Table Styles */
+.table {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.table th {
+    background: var(--gradient-1);
+    color: white;
+    font-weight: 600;
+    padding: 1rem;
+}
+
+.table td {
+    vertical-align: middle;
+    padding: 0.75rem;
+    border-bottom: 1px solid #eee;
+}
+
+/* Visualizations */
+.card h5 {
+    color: var(--dark-color);
+    margin: 1rem 0;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover Effects */
+.table tr:hover {
+    background: rgba(108, 92, 231, 0.05);
+}
+
+.form-control:hover, .form-select:hover {
+    border-color: var(--primary-color);
+}
+
+/* Gradient Animations */
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.card {
+    animation: gradient 15s ease infinite;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.form-control {
+    height: 200px;
+    resize: vertical;
+}
+
+.btn-primary {
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+}
+
+.alert {
+    border-radius: 0.5rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+.alert-heading {
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+h1 {
+    color: #2c3e50;
+    font-weight: 600;
+}

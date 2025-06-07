@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klasifikasi Penyakit Jantung</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klasifikasi Penyakit Jantung</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container mt-5" style="background: linear-gradient(145deg, #f1f2f6, #e0e1ff); padding-bottom: 2rem;">
+    <h2 class="mb-4 text-center" style="color: #2c3e50; font-weight: 600; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Klasifikasi Penyakit Jantung (Random Forest)</h2>
+    <form method="POST" class="card p-4 shadow-sm" style="background: linear-gradient(145deg, #a8e063, #6c5ce7); color: white;">
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        {% for feature in features %}
+        <div class="mb-3">
+            <label class="form-label">{{ feature }}</label>
+            {% if feature in feature_ranges %}
+            <input type="number" class="form-control" name="{{ feature }}" 
+                   min="{{ feature_ranges[feature][0] }}" max="{{ feature_ranges[feature][1] }}" 
+                   step="0.1" required>
+            <small class="text-muted">Rentang: {{ feature_ranges[feature][0] }} – {{ feature_ranges[feature][1] }}</small>
+            {% else %}
+            <select class="form-select" name="{{ feature }}" required>
+                <option value="" disabled selected>-- Pilih nilai --</option>
+                {% for val in feature_options[feature] %}
+                <option value="{{ val }}">{{ val }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary" style="background: linear-gradient(145deg, #00b894, #0984e3); border: none; color: white; padding: 0.75rem 2rem;">
+            <i class="fas fa-heartbeat me-2"></i>Klasifikasikan
+        </button>
+    </form>
+    <hr>
+    <h5 class="text-center mb-4" style="color: #2c3e50; font-weight: 500; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">Visualisasi Model</h5>
+    <div class="row g-3">
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 p-2">
+                <img src="{{ url_for('show_visualization', filename='heart_disease_distribution.png') }}" alt="Distribusi Kelas" class="img-fluid rounded border mb-2">
+                <div class="text-center fw-semibold">Distribusi Kelas</div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 p-2">
+                <img src="{{ url_for('show_visualization', filename='confusion_matrix.png') }}" alt="Confusion Matrix" class="img-fluid rounded border mb-2">
+                <div class="text-center fw-semibold">Confusion Matrix</div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 p-2">
+                <img src="{{ url_for('show_visualization', filename='feature_importance.png') }}" alt="Feature Importance" class="img-fluid rounded border mb-2">
+                <div class="text-center fw-semibold">Feature Importance</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Autofill fitur -->
+    <div class="mb-4 mt-4">
+        <label class="form-label">Pilih Baris Data (autofill semua input):</label>
+        <select class="form-select" id="row-autofill" style="background: linear-gradient(145deg, #fdcb6e, #00b894); border: 1px solid #ddd; padding: 0.75rem; border-radius: 8px; color: #2d3436;">
+            <option value="" selected><i class="fas fa-database"></i> -- Pilih baris dari dataset --</option>
+            <option value="" selected>-- Pilih baris dari dataset --</option>
+            {% for row in dataset_rows %}
+            <option value="{{ loop.index0 }}">Baris {{ loop.index }}: {{ row[:-1]|join(', ') }}</option>
+            {% endfor %}
+        </select>
+        <small class="text-muted">Memilih baris di sini akan mengisi otomatis semua input fitur di atas.</small>
+    </div>
+
+    <!-- Dataset Preview -->
+    <hr class="mt-5">
+    <h5 class="mt-4 mb-3">Dataset Contoh</h5>
+    <div class="table-responsive" style="background: linear-gradient(145deg, #f1f2f6, #e0e1ff); border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    {% for col in dataset_columns %}
+                    <th>{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in dataset_rows %}
+                <tr>
+                    {% for val in row %}
+                    <td>{{ val }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="text-muted small" style="text-align: center; padding: 1rem; background: linear-gradient(145deg, #fdcb6e, #00b894); border-radius: 8px; margin-top: 1rem; color: #2d3436;">Menampilkan 20 baris pertama dari dataset sebagai referensi input dan autofill.</div>
+</div>
+
+<script>
+// Autofill fitur dari dropdown baris
+document.addEventListener('DOMContentLoaded', function() {
+    const dataset = JSON.parse('{{ dataset_rows|tojson }}');
+    const featureNames = JSON.parse('{{ features|tojson }}');
+    
+    document.getElementById('row-autofill').addEventListener('change', function() {
+        const idx = parseInt(this.value);
+        if (!isNaN(idx)) {
+            const row = dataset[idx];
+            featureNames.forEach(function(feature, i) {
+                const input = document.querySelector(`[name="${feature}"]`);
+                if (input) {
+                    input.value = row[i];
+                }
+            });
+        }
+    });
+});
+</script>
+</body>
+</html>
